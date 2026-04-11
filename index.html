@@ -8,7 +8,27 @@
     <h1 class="title">Cat Social 🐱</h1>
     <input class="text">
     <input class="cat_name" placeholder="Имя котика">
+    <select class="cat_avatar">
+        <option value="🐱">🐱</option>
+        <option value="🐈">🐈</option>
+        <option value="😺">😺</option>
+        <option value="🐾">🐾</option>
+    </select>
+    <p></p>
+    <select class="filter_cat">
+        <option>Все котики</option>
+        <option></option>
+        <option></option>
+    </select>
+        <button class="apply_filter_btn">Применить фильтр</button>
+        <button class="reset_filter_btn">Сбросить фильтр</button>
+    <p></p>
     <button class="button">Добавить пост</button>
+    <p>Отсортировать:</p>
+    <button class="sort_date_new">По дате (новые)</button>
+    <button class="sort_date_old">По дате (старые)</button>
+    <button class="sort_likes">По лайкам</button>
+    <p></p>
     <div class="post"></div>
 
     <script type="module" src="main.js"></script>
