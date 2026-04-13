@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Cat Social </title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1 class="title">Cat Social 🐱</h1>
-    <input class="text">
-    <input class="cat_name" placeholder="Имя котика">
-    <select class="cat_avatar">
-    </select>
-    <p></p>
-    <button class="button">Добавить пост</button>
-    <p></p>
-    <select class="filter_cat">
-        <option>Все котики</option>
-        <option></option>
-        <option></option>
-    </select>
-        <button class="apply_filter_btn">Применить фильтр</button>
-        <button class="reset_filter_btn">Сбросить фильтр</button>
-    <p></p>
-    <p>Отсортировать:</p>
-    <button class="sort_date_new">По дате (новые)</button>
-    <button class="sort_date_old">По дате (старые)</button>
-    <button class="sort_likes">По лайкам</button>
-    <p></p>
+    <div class="form">
+        <input class="text">
+        <input class="cat_name" placeholder="Имя котика">
+        <select class="cat_avatar">
+        </select>
+        <button class="button">Добавить пост</button>
+    </div>
+    <div class="filter">
+        <select class="filter_cat">
+            <option>Все котики</option>
+        </select>
+            <button class="apply_filter_btn">Применить фильтр</button>
+            <button class="reset_filter_btn">Сбросить фильтр</button>
+    </div>
+    <div class="sort">
+        <p>Отсортировать:</p>
+        <button class="sort_date_new">По дате (новые)</button>
+        <button class="sort_date_old">По дате (старые)</button>
+        <button class="sort_likes">По лайкам</button>
+    </div>
     <div class="post"></div>
 
     <script type="module" src="main.js"></script>

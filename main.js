@@ -27,6 +27,7 @@ const filterButtons = {
 const avatars = ["🐱", "🐈", "😺", "🐾"];
 avatars.forEach((cat) => {
     const option = document.createElement("option");
+    option.classList.add("avatar_option");
     option.textContent = cat;
     postCreate.catAvatar.append(option); 
 })
@@ -46,14 +47,16 @@ postCreate.button.addEventListener("click", function() { // при нажати�
     const now = new Date(); // создаём дату прямо сейчас
     const postData = { // создаем объект поста
         text: postCreate.input.value, // в текст передаем введеный в поле текст
-        name: postCreate.catName.value, // введено имя
+        name: postCreate.catName.value.trim(), // введено имя
         avatar: postCreate.catAvatar.value, // выбранный аватар
         createdAt: now, // используем дату
         likes: 0, // изначально лайки = 0
+        isLiked: false,
     }
     posts.unshift(postData) // добавляем созданный пост в массив
     savePostsToLocalStorage(posts)
     render(posts); // вызывает функцию 
+    updateFilterOptions();
     // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
     postCreate.input.value = ""; // очищаем поле текста
     postCreate.catName.value = ""; // очищаем имя
@@ -92,6 +95,20 @@ function applyFilter() {
     }
 }
 
+function updateFilterOptions() {
+    const names = posts.map((post) => post.name);
+    const uniqueNames = new Set(names);
+    filterButtons.catFilter.innerHTML = "";
+    const selectedValue = document.createElement("option");
+    selectedValue.textContent = "Все котики";
+    filterButtons.catFilter.append(selectedValue);
+    uniqueNames.forEach((name) => { 
+        const option = document.createElement("option");
+        option.textContent = name;
+        filterButtons.catFilter.append(option);
+    })
+}
+
 // вызвать функцию applyFilter()
 filterButtons.applyFilterBtn.addEventListener("click", () => {
     applyFilter()
@@ -106,9 +123,11 @@ filterButtons.resetFilterBtn.addEventListener("click", () => {
 function updatePosts(newPosts) {
     savePostsToLocalStorage(newPosts); // сохраняем newPosts в localStorage
     posts = newPosts; // обновляем глобальную переменную 
+    updateFilterOptions()
     render(posts); // перерисовываем посты
 }
 
 
 posts = loadPostsFromLocalStorage() // присваеваем новое значение posts и вызываем функцию 
+updateFilterOptions()
 render(posts)

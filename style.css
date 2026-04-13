@@ -1,0 +1,55 @@
+.title {
+    text-align: center;
+    font-family: fantasy;
+    font-size: 40px;
+}
+
+.form,
+.filter,
+.sort {
+    display: flex;
+    justify-content: center;
+    margin-block-end: 30px;
+    gap: 10px;
+}
+
+.post_card {
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid brown;
+    border-radius: 15px;
+    text-align: center;
+    margin-block-end: 10px;
+}
+
+.post_text {
+
+}
+
+.post_name {
+
+}
+
+.post_date {
+
+}
+
+.post_avatar {
+
+}
+
+.button_remove,
+.button_edit,
+.button_like {
+    border: 1px brown solid;
+    background-color: #fff;
+    margin-inline-end: 5px;
+}
+
+.button_like {
+    margin-inline-end: 0;
+}
+
+.liked {
+    background-color: rgb(255, 201, 233);
+}
