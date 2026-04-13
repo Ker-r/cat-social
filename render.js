@@ -4,22 +4,12 @@
 // Вешает обработчики, которые при клике меняют данные (удаляют пост или увеличивают лайк) и вызывают onUpdate(newPosts).
 function createPost(postData, container, onUpdate, postsArray) { //создаем отдельную функцию создания поста
     const element = document.createElement("div"); // создаем div с постом
-    const textElement = document.createElement("span"); // создаем отдельный тег для текста поста
-    const catNamePost = document.createElement("span"); // тег для имени
-    const dateString = document.createElement("span"); // тег для времени
-    const avatarCat = document.createElement("span");
-
-    textElement.textContent = postData.text; // и добавляем в него введенный текст
-    catNamePost.textContent = postData.name || 'Анонимный котик';
-    avatarCat.textContent = postData.avatar || "🐱";
-    dateString.textContent = postData.createdAt // может быть строкой (после JSON.stringify/parse) или объектом Date
-        ? new Date(postData.createdAt).toLocaleString() // превращает дату в строку типа «06.04.2026, 12:34:56».
-        : 'дата неизвестна';
-
-    element.append(avatarCat);
-    element.append(textElement); // добавляем текст к посту
-    element.append(catNamePost);
-    element.append(dateString);
+    element.innerHTML = `
+        <span>${postData.text}</span>
+        <span>${postData.name}</span>
+        <span>${postData.createdAt ? new Date(postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
+        <span>${postData.avatar || "🐱"}</span>
+    `;
 
     const removeButton = document.createElement("button"); // создаем кнопку удаления поста
     removeButton.textContent = "❌"; // текст внутри нее

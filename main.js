@@ -3,96 +3,112 @@ import { savePostsToLocalStorage, loadPostsFromLocalStorage } from './storage.js
 import { renderPosts} from './render.js'
 
 let posts = []; // создаем массив постов
-const button = document.querySelector(".button") // ищем кнопку создания поста
-const input = document.querySelector(".text") // ищем поле ввода
-const post = document.querySelector(".post") // ищем тег для всех постов
-const catName = document.querySelector(".cat_name") // ищем тег для поля ввода имени котика
-const catAvatar = document.querySelector(".cat_avatar") // ищем тег для выбора аватара котика
-const catFilter = document.querySelector(".filter_cat"); // выпадающий список с выбором для фильтрации
-let currentFilter = "all"; // переменная для хранения фильтра
 
-// кнопки сортировки 
-const buttonNew = document.querySelector(".sort_date_new")
-const buttonOld = document.querySelector(".sort_date_old")
-const buttonLikes = document.querySelector(".sort_likes")
+const postCreate = {
+    button: document.querySelector(".button"), // ищем кнопку создания поста
+    input: document.querySelector(".text"), // ищем поле ввода
+    post: document.querySelector(".post"), // ищем тег для всех постов
+    catName: document.querySelector(".cat_name"), // ищем тег для поля ввода имени котика
+    catAvatar: document.querySelector(".cat_avatar"), // ищем тег для выбора аватара котика
+}
 
-// кнопки фильтрации
-const applyFilterBtn = document.querySelector(".apply_filter_btn");
-const resetFilterBtn = document.querySelector(".reset_filter_btn");
+const sortButtons = {
+    buttonNew: document.querySelector(".sort_date_new"),
+    buttonOld: document.querySelector(".sort_date_old"),
+    buttonLikes: document.querySelector(".sort_likes"),
+}
+
+const filterButtons = {
+    catFilter: document.querySelector(".filter_cat"), // выпадающий список с выбором для фильтрации
+    applyFilterBtn: document.querySelector(".apply_filter_btn"),
+    resetFilterBtn: document.querySelector(".reset_filter_btn"),
+}
+
+const avatars = ["🐱", "🐈", "😺", "🐾"];
+avatars.forEach((cat) => {
+    const option = document.createElement("option");
+    option.textContent = cat;
+    postCreate.catAvatar.append(option); 
+})
+
+function render(postsToRender) { 
+    renderPosts(postCreate.post, postsToRender, updatePosts)
+}
 
 // обработчик создания поста
-button.addEventListener("click", function() { // при нажатии на кнопку
-    if(input.value.trim() === "") { // если текста внутри поля нет
+postCreate.button.addEventListener("click", function() { // при нажатии на кнопку
+    if(postCreate.input.value.trim() === "") { // если текста внутри поля нет
         return // мы ничего не делаем
+    }
+    if(postCreate.catName.value.trim() === "") {
+        postCreate.catName.value = 'Анонимный котик';
     }
     const now = new Date(); // создаём дату прямо сейчас
     const postData = { // создаем объект поста
-        text: input.value, // в текст передаем введеный в поле текст
-        name: catName.value, // введено имя
-        avatar: catAvatar.value, // выбранный аватар
+        text: postCreate.input.value, // в текст передаем введеный в поле текст
+        name: postCreate.catName.value, // введено имя
+        avatar: postCreate.catAvatar.value, // выбранный аватар
         createdAt: now, // используем дату
         likes: 0, // изначально лайки = 0
     }
-    posts.push(postData) // добавляем созданный пост в массив
+    posts.unshift(postData) // добавляем созданный пост в массив
     savePostsToLocalStorage(posts)
-    renderPosts(post, posts, updatePosts) // вызывает функцию 
+    render(posts); // вызывает функцию 
     // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
-    input.value = ""; // очищаем поле текста
-    catName.value = ""; // очищаем имя
-    catAvatar.selectedIndex = 0; // очищаем список с аватарками
+    postCreate.input.value = ""; // очищаем поле текста
+    postCreate.catName.value = ""; // очищаем имя
+    postCreate.catAvatar.selectedIndex = 0; // очищаем список с аватарками
 });
 
-buttonNew.addEventListener("click", () => { // сортировка от новых к старым постам
+sortButtons.buttonNew.addEventListener("click", () => { // сортировка от новых к старым постам
     let sortPosts = [...posts];
     sortPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     posts = sortPosts;
-    renderPosts(post, posts, updatePosts);
+    render(posts); 
 })
 
-buttonOld.addEventListener("click", () => { // сортировка от старых к новым постам
+sortButtons.buttonOld.addEventListener("click", () => { // сортировка от старых к новым постам
     let sortPosts = [...posts];
     sortPosts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     posts = sortPosts;
-    renderPosts(post, posts, updatePosts);
+    render(posts); 
 })
 
-buttonLikes.addEventListener("click", () => { // сортировка от большего к меньшему кол-ву лайков
+sortButtons.buttonLikes.addEventListener("click", () => { // сортировка от большего к меньшему кол-ву лайков
     let sortPosts = [...posts];
     sortPosts.sort((a, b) => b.likes - a.likes);
     posts = sortPosts;
-    renderPosts(post, posts, updatePosts);
+    render(posts); 
 })
 
 function applyFilter() {
-    const selectedValue = catFilter.value;
+    const selectedValue = filterButtons.catFilter.value;
     if(selectedValue === "Все котики") {
-        renderPosts(post, posts, updatePosts)
+        render(posts);
     }
     else {
         const filtered = posts.filter(post => post.name === selectedValue);
-        renderPosts(post, filtered, updatePosts)
+        render(filtered); 
     }
 }
 
 // вызвать функцию applyFilter()
-applyFilterBtn.addEventListener("click", () => {
+filterButtons.applyFilterBtn.addEventListener("click", () => {
     applyFilter()
 })
 
 // сбросить фильтр
-resetFilterBtn.addEventListener("click", () => {
-    catFilter.value = "Все котики";
+filterButtons.resetFilterBtn.addEventListener("click", () => {
+    filterButtons.catFilter.value = "Все котики";
     applyFilter()
 });
-
-
 
 function updatePosts(newPosts) {
     savePostsToLocalStorage(newPosts); // сохраняем newPosts в localStorage
     posts = newPosts; // обновляем глобальную переменную 
-    renderPosts(post, posts, updatePosts); // перерисовываем посты
+    render(posts); // перерисовываем посты
 }
 
 
 posts = loadPostsFromLocalStorage() // присваеваем новое значение posts и вызываем функцию 
-renderPosts(post, posts, updatePosts)
+render(posts)
