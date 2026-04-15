@@ -1,4 +1,5 @@
 // работа с хранилищем браузера
+import { nanoid } from 'nanoid';
 import { Post } from './types'
 
 // Сохраняем текущий массив постов в localStorage,
@@ -13,7 +14,14 @@ export function loadPostsFromLocalStorage(): Post[] { // читает строк
     // Post[] - это тип возвращаемого значения
     const catString = localStorage.getItem('cat_posts');
     if (catString !== null) {
-        return JSON.parse(catString); // снова массив
+        const posts = JSON.parse(catString);
+        const postsWithId = posts.map((post: Post) => {
+            if (!post.id) {
+                post.id = nanoid(); // добавляем id если его нет
+            }
+            return post; // возвращаем пост обратно
+        });
+        return postsWithId;
     } else {
         return []; // Если там ничего нет, оставляем пустой массив.
     }

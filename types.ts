@@ -2,6 +2,7 @@
 
 // интерфейс для PostData - это описание того как должен выглядеть объект
 export interface Post {
+    id: string;
     text: string;
     name: string;
     avatar: string;

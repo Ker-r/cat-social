@@ -21,7 +21,7 @@ function createPost(postData: Post, container: HTMLDivElement, onUpdate: (posts:
         const isConfirmed = confirm("Точно удалить этот пост?");
         if (isConfirmed === false) return;
         const newPosts = postsArray.filter((p) =>  // вместо слова function мы добавили =>
-            p !== postData // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
+            p.id !== postData.id // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
         ) // удаляем пост
         onUpdate(newPosts);
     })
