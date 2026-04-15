@@ -1,0 +1,25 @@
+{
+  "name": "cat-social",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+      "dev": "vite",
+      "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ker-r/cat-social.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ker-r/cat-social/issues"
+  },
+  "homepage": "https://github.com/Ker-r/cat-social#readme",
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
+  }
+}

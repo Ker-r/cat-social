@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", //говорит в какую версию JavaScript компилировать наш TypeScript
+    "module": "ES2020", // говорит что мы используем современные import/export
+    "moduleResolution": "bundler", //говорит что модули разрешает Vite, а не Node.js
+    "strict": true, //включает строгую проверку типов
+    "skipLibCheck": true
+  }
+}
