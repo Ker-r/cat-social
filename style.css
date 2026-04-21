@@ -11,6 +11,27 @@
     justify-content: center;
     margin-block-end: 30px;
     gap: 10px;
+    align-items: flex-start;
+}
+
+.text_wrapper {
+    position: relative;
+}
+
+.text {
+    border: 1px black solid;
+    background-color: #fff;
+    width: 300px;
+    height: 100px;
+    resize: none;
+}
+
+.counter {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .post_card {
@@ -52,4 +73,8 @@
 
 .liked {
     background-color: rgb(255, 201, 233);
+}
+
+.counter_warning {
+    color: red;
 }

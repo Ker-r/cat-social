@@ -16,6 +16,24 @@ const postCreate = {
     catAvatar: document.querySelector<HTMLSelectElement>(".cat_avatar")!, // ищем тег для выбора аватара котика
 }
 
+const MAX_LENGTH = 300;
+const counter = document.querySelector<HTMLSpanElement>(".counter")!;
+counter.textContent = String(MAX_LENGTH);
+
+postCreate.input.addEventListener("input", function(){ // считает количество введенных символов и показывается сколько осталось
+    if (postCreate.input.value.length > MAX_LENGTH) { // если пользователь ввел много символов,
+        postCreate.input.value = postCreate.input.value.slice(0, MAX_LENGTH) // обрезаем текст в поле до MAX_LENGTH символов
+    }
+    const remaining = MAX_LENGTH - postCreate.input.value.length; // от макисмума отнимаем столько символов сколько уже написано
+    counter.textContent = String(remaining); // превращаем число в строку и записываем в счетчик
+    if (remaining < 20) {
+        counter.classList.add("counter_warning");
+    }
+    else {
+        counter.classList.remove("counter_warning");
+    }
+})
+
 const sortButtons = {
     buttonNew: document.querySelector<HTMLButtonElement>(".sort_date_new")!,
     buttonOld: document.querySelector<HTMLButtonElement>(".sort_date_old")!,
