@@ -10,3 +10,11 @@ export interface Post {
     likes: number;
     isLiked: boolean;
 }
+
+// интерфейс для ServerPost
+export interface ServerPost {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}

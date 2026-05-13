@@ -1,6 +1,7 @@
 // работа с хранилищем браузера
 import { nanoid } from 'nanoid';
 import { Post } from './types'
+import { ServerPost } from './types';
 
 // Сохраняем текущий массив постов в localStorage,
 // чтобы при перезагрузке страницы они не исчезли.
@@ -24,5 +25,18 @@ export function loadPostsFromLocalStorage(): Post[] { // читает строк
         return postsWithId;
     } else {
         return []; // Если там ничего нет, оставляем пустой массив.
+    }
+}
+
+// async — функция асинхронная, возвращает Promise с массивом ServerPost
+export async function loadPostsFromServer(): Promise<ServerPost[]> {
+    try { // пробуем выполнить запрос
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts"); // отправляем запрос на сервер, ждём ответа (конверт)
+        const data = await response.json(); // вскрываем конверт — достаём данные из ответа
+        return data; // возвращаем массив постов
+    } 
+    catch(error) { // если что-то пошло не так (нет интернета, сервер недоступен)
+        console.log(error); // выводим ошибку в консоль
+        return []; // возвращаем пустой массив чтобы приложение не сломалось
     }
 }

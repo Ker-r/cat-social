@@ -1,9 +1,9 @@
 // главный управляющий файл
 import { nanoid } from 'nanoid';
-import { savePostsToLocalStorage, loadPostsFromLocalStorage } from './storage'
+import { savePostsToLocalStorage, loadPostsFromLocalStorage, loadPostsFromServer } from './storage'
 import { renderPosts} from './render'
 
-import { Post } from './types'
+import { Post, ServerPost } from './types'
 
 let posts: Post[] = []; // создаем массив постов
 
@@ -14,6 +14,7 @@ const postCreate = {
     post: document.querySelector<HTMLDivElement>(".post")!, // ищем тег для всех постов
     catName: document.querySelector<HTMLInputElement>(".cat_name")!, // ищем тег для поля ввода имени котика
     catAvatar: document.querySelector<HTMLSelectElement>(".cat_avatar")!, // ищем тег для выбора аватара котика
+    serverButton: document.querySelector<HTMLButtonElement>(".load_server_btn")!,
 }
 
 const MAX_LENGTH = 300;
@@ -32,6 +33,13 @@ postCreate.input.addEventListener("input", function(){ // считает кол�
     else {
         counter.classList.remove("counter_warning");
     }
+})
+
+postCreate.serverButton.addEventListener("click", async function() {
+    // async — функция асинхронная, можно использовать await внутри
+    const serverPosts = await loadPostsFromServer(); // ждём пока загрузятся посты с сервера
+    const converPosts = convertServerPosts(serverPosts); // преобразуем серверный формат в наш формат
+    render(converPosts); // отрисовываем посты на экране — очищает контейнер и рисует каждый пост
 })
 
 const sortButtons = {
@@ -119,7 +127,7 @@ function applyFilter(): void {
 }
 
 function updateFilterOptions(): void {
-    const names = posts.map((post) => post.name);
+    const names = posts.map((post) => post.name); // берём каждый post → возвращаем только его name
     const uniqueNames = new Set(names);
     filterButtons.catFilter.innerHTML = "";
     const selectedValue = document.createElement("option");
@@ -148,6 +156,23 @@ function updatePosts(newPosts: Post[]): void {
     posts = newPosts; // обновляем глобальную переменную 
     updateFilterOptions()
     render(posts); // перерисовываем посты
+}
+
+// принимает массив постов с сервера (ServerPost[]) и возвращает массив наших постов (Post[])
+function convertServerPosts(serverPosts: ServerPost[]): Post[] {
+    // map проходит по каждому посту с сервера и возвращает новый массив уже в нашем формате
+    const convertPost = serverPosts.map((serverPost) => {
+    return {
+        id: String(serverPost.id), // id на сервере число, превращаем в строку
+        text: serverPost.title,    // на сервере текст поста называется title, у нас — text
+        name: "Котик " + serverPost.userId, // у сервера нет имени, придумываем из userId
+        avatar: "🐱", // на сервере нет аватарки, ставим по умолчанию
+        createdAt: new Date(), // на сервере нет даты, ставим текущее время
+        likes: 0, // новый пост — лайков нет
+        isLiked: false, // новый пост — не лайкнут
+    }
+    })
+    return convertPost; // возвращаем готовый массив наших постов
 }
 
 
