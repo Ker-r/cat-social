@@ -1,6 +1,6 @@
 // главный управляющий файл
 import { nanoid } from 'nanoid';
-import { savePostsToLocalStorage, loadPostsFromLocalStorage, loadPostsFromServer } from './storage'
+import { storage } from './storage'
 import { renderPosts} from './render'
 
 import { Post, ServerPost } from './types'
@@ -37,7 +37,7 @@ postCreate.input.addEventListener("input", function(){ // считает кол�
 
 postCreate.serverButton.addEventListener("click", async function() {
     // async — функция асинхронная, можно использовать await внутри
-    const serverPosts = await loadPostsFromServer(); // ждём пока загрузятся посты с сервера
+    const serverPosts = await storage.loadPostsFromServer(); // ждём пока загрузятся посты с сервера
     const converPosts = convertServerPosts(serverPosts); // преобразуем серверный формат в наш формат
     render(converPosts); // отрисовываем посты на экране — очищает контейнер и рисует каждый пост
 })
@@ -85,7 +85,7 @@ postCreate.button.addEventListener("click", function() { // при нажати�
         isLiked: false,
     }
     posts.unshift(postData) // добавляем созданный пост в массив
-    savePostsToLocalStorage(posts)
+    storage.savePostsToLocalStorage(posts)
     render(posts); // вызывает функцию 
     updateFilterOptions();
     // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
@@ -152,7 +152,7 @@ filterButtons.resetFilterBtn.addEventListener("click", () => {
 });
 
 function updatePosts(newPosts: Post[]): void {
-    savePostsToLocalStorage(newPosts); // сохраняем newPosts в localStorage
+    storage.savePostsToLocalStorage(newPosts); // сохраняем newPosts в localStorage
     posts = newPosts; // обновляем глобальную переменную 
     updateFilterOptions()
     render(posts); // перерисовываем посты
@@ -176,6 +176,6 @@ function convertServerPosts(serverPosts: ServerPost[]): Post[] {
 }
 
 
-posts = loadPostsFromLocalStorage() // присваеваем новое значение posts и вызываем функцию 
+posts = storage.loadPostsFromLocalStorage() // присваеваем новое значение posts и вызываем функцию 
 updateFilterOptions()
 render(posts)
