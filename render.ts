@@ -1,65 +1,92 @@
 // отображение постов и реакция на действия пользователя
 import { Post } from './types'
 
-// создаёт один HTML-элемент для одного поста: текст, имя котика, дату, кнопки удаления и лайка. 
-// Вешает обработчики, которые при клике меняют данные (удаляют пост или увеличивают лайк) и вызывают onUpdate(newPosts).
-function createPost(postData: Post, container: HTMLDivElement, onUpdate: (posts: Post[]) => void, postsArray: Post[]) { //создаем отдельную функцию создания поста
-    // (posts: Post[]) => void - мы ждем функцию, которая принимает массив постов и ничего не возвращает
-    const element = document.createElement("div"); // создаем div с постом
-    element.classList.add("post_card");
-    element.innerHTML = `
-        <span class="post_text">${postData.text}</span>
-        <span class="post_name">${postData.name}</span>
-        <span class="post_date">${postData.createdAt ? new Date(postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
-        <span class="post_avatar">${postData.avatar || "🐱"}</span>
-    `;
+class PostCard {
+    // protected - дочерние классы могут обращаться к таким полям.
+    protected postData: Post;
+    protected container: HTMLDivElement;
+    protected onUpdate: (posts: Post[]) => void;
+    protected postsArray: Post[];
 
-    const removeButton = document.createElement("button"); // создаем кнопку удаления поста
-    removeButton.classList.add("button_remove");
-    removeButton.textContent = "❌"; // текст внутри нее
-    removeButton.addEventListener("click", function(){ // при нажатии на эту кнопку
-        const isConfirmed = confirm("Точно удалить этот пост?");
-        if (isConfirmed === false) return;
-        const newPosts = postsArray.filter((p) =>  // вместо слова function мы добавили =>
-            p.id !== postData.id // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
-        ) // удаляем пост
-        onUpdate(newPosts);
-    })
-    element.append(removeButton); // добавляем кнопку в созданный пост
-
-    const editButton = document.createElement("button");
-    editButton.classList.add("button_edit");
-    editButton.textContent = "✏️";
-    editButton.addEventListener("click", function() {
-        const newText = prompt("Введите новый текст поста", postData.text); // prompt - всплывающее окно
-        // Если нажали "Отмена" — выходим
-        if (newText === null) return;
-
-        // Если после удаления пробелов ничего не осталось — выходим
-        if (newText.trim() === "") return;
-
-        // Если дошли сюда — текст валидный, обновляем
-        postData.text = newText.trim();
-        onUpdate(postsArray);
-    })
-    element.append(editButton); 
-
-    const likeButton = document.createElement("button"); // создаем кнопку для лайков
-    likeButton.classList.add("button_like");
-    if (postData.isLiked) {
-        likeButton.classList.add("liked");
+    // Вешает обработчики, которые при клике меняют данные (удаляют пост или увеличивают лайк) и вызывают onUpdate(newPosts).
+    constructor(postData: Post, container: HTMLDivElement, onUpdate: (posts: Post[]) => void, postsArray: Post[]) {
+        // (posts: Post[]) => void - мы ждем функцию, которая принимает массив постов и ничего не возвращает
+        this.postData = postData;
+        this.container = container;
+        this.onUpdate = onUpdate;
+        this.postsArray = postsArray;
     }
-    likeButton.textContent = "❤️ " + postData.likes; // добавляем текст на кнопку и количество лайков
-    likeButton.addEventListener("click", function() { // при нажатии на кнопку лайка
-        postData.likes++; // увеличиваем лайк на 1
-        postData.isLiked = !postData.isLiked;
-        onUpdate(postsArray);
-    })
-    element.append(likeButton); // добавляем кнопку к посту
 
-    container.append(element); // добавляем пост 
+    // метод отрисовывает карточку на экране
+    // создаёт один HTML-элемент для одного поста: текст, имя котика, дату, кнопки удаления и лайка. 
+    render(): void {
+        const element = document.createElement("div"); // создаем div с постом
+        element.classList.add("post_card");
+        element.innerHTML = `
+            <span class="post_text">${this.postData.text}</span>
+            <span class="post_name">${this.postData.name}</span>
+            <span class="post_date">${this.postData.createdAt ? new Date(this.postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
+            <span class="post_avatar">${this.postData.avatar || "🐱"}</span>
+        `;
+
+        const removeButton = document.createElement("button"); // создаем кнопку удаления поста
+        removeButton.classList.add("button_remove");
+        removeButton.textContent = "❌"; // текст внутри нее
+        removeButton.addEventListener("click", () => { // при нажатии на эту кнопку
+            const isConfirmed = confirm("Точно удалить этот пост?");
+            if (isConfirmed === false) return;
+            const newPosts = this.postsArray.filter((p) =>  // вместо слова function мы добавили =>
+                p.id !== this.postData.id // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
+            ) // удаляем пост
+            this.onUpdate(newPosts);
+        })
+        element.append(removeButton); // добавляем кнопку в созданный пост
+
+        const editButton = document.createElement("button");
+        editButton.classList.add("button_edit");
+        editButton.textContent = "✏️";
+        editButton.addEventListener("click", () => {
+            const newText = prompt("Введите новый текст поста", this.postData.text); // prompt - всплывающее окно
+            // Если нажали "Отмена" — выходим
+            if (newText === null) return;
+
+            // Если после удаления пробелов ничего не осталось — выходим
+            if (newText.trim() === "") return;
+
+            // Если дошли сюда — текст валидный, обновляем
+            this.postData.text = newText.trim();
+            this.onUpdate(this.postsArray);
+        })
+        element.append(editButton); 
+
+        const likeButton = document.createElement("button"); // создаем кнопку для лайков
+        likeButton.classList.add("button_like");
+        if (this.postData.isLiked) {
+            likeButton.classList.add("liked");
+        }
+        likeButton.textContent = "❤️ " + this.postData.likes; // добавляем текст на кнопку и количество лайков
+        likeButton.addEventListener("click", () => { // при нажатии на кнопку лайка
+            this.postData.likes++; // увеличиваем лайк на 1
+            this.postData.isLiked = !this.postData.isLiked;
+            this.onUpdate(this.postsArray);
+        })
+        element.append(likeButton); // добавляем кнопку к посту
+
+        this.container.append(element); // добавляем пост 
+        }
 }
 
+// наследуем от PostCard
+class FeaturedPostCard extends PostCard {
+    // здесь только то что отличается от PostCard
+    render(): void {
+        // чтобы не писать весь код заново — можно вызвать родительский метод через super.render()
+        super.render(); // вызываем render() из PostCard
+        // здесь добавляем своё
+        const frame = this.container.lastElementChild!
+        frame.classList.add("featured_card");
+    }
+}
 
 // очищает контейнер (HTML-элемент post) и заново рисует все посты из postsArray. 
 // При этом каждой кнопке (удалить, лайк) передаёт функцию onUpdate, чтобы сообщать об изменениях.
@@ -69,6 +96,13 @@ export function renderPosts(container: HTMLDivElement, postsArray: Post[], onUpd
     // onSave — это функция, которая будет вызвана, когда нужно сохранить изменения.
     container.innerHTML = "" // очистить экран
     postsArray.forEach((postData) => { // вместо слова function мы добавили =>
-        createPost(postData, container, onUpdate, postsArray) // создаем пост с данными
+        if (postData.likes > 5) {
+            const frameCard = new FeaturedPostCard(postData, container, onUpdate, postsArray); // new — это способ создать конкретный экземпляр класса.
+            frameCard.render(); // создаем пост с данными с золотой рамкой
+        }
+        else {
+            const card = new PostCard(postData, container, onUpdate, postsArray); // new — это способ создать конкретный экземпляр класса.
+            card.render(); // создаем пост с данными
+        }
     })
 }

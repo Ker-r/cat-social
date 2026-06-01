@@ -78,3 +78,7 @@
 .counter_warning {
     color: red;
 }
+
+.featured_card {
+    border: 2px solid gold;
+}
