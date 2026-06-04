@@ -24,9 +24,14 @@ class PostCard {
         element.classList.add("post_card");
         element.innerHTML = `
             <div class="post_header">
-                <span class="post_name">${this.postData.name}</span>
-                <span class="post_date">${this.postData.createdAt ? new Date(this.postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
-                <span class="post_avatar">${this.postData.avatar || "🐱"}</span>
+                <div class="post_header_left">
+                    <span class="post_avatar">${this.postData.avatar || "🐱"}</span>
+                    <div class="post_info">
+                        <span class="post_name">${this.postData.name}</span>
+                        <span class="post_date">${this.postData.createdAt ? new Date(this.postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
+                    </div>
+                </div>
+                <div class="post_header_right"></div>
             </div>
             <div class="post_body">
                 <span class="post_text">${this.postData.text}</span>

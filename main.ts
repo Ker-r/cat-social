@@ -14,6 +14,7 @@ const postCreate = {
     post: document.querySelector<HTMLDivElement>(".post")!, // ищем тег для всех постов
     catName: document.querySelector<HTMLInputElement>(".cat_name")!, // ищем тег для поля ввода имени котика
     catAvatar: document.querySelector<HTMLSelectElement>(".cat_avatar")!, // ищем тег для выбора аватара котика
+    clearButton: document.querySelector<HTMLButtonElement>(".button.button--secondary")!,
     serverButton: document.querySelector<HTMLButtonElement>(".load_server_btn")!,
 }
 
@@ -74,6 +75,11 @@ postCreate.button.addEventListener("click", function() { // при нажати�
     if(postCreate.catName.value.trim() === "") {
         postCreate.catName.value = 'Анонимный котик';
     }
+    const pattern = /^[а-яёА-ЯЁa-zA-Z\s]+$/; // Проверка имени котика через регулярное выражение
+    if(!pattern.test(postCreate.catName.value)) {
+        alert("Неправильное имя котика");
+        return;
+    }
     const now = new Date(); // создаём дату прямо сейчас
     const postData = { // создаем объект поста
         id: nanoid(),
@@ -92,6 +98,12 @@ postCreate.button.addEventListener("click", function() { // при нажати�
     postCreate.input.value = ""; // очищаем поле текста
     postCreate.catName.value = ""; // очищаем имя
     postCreate.catAvatar.selectedIndex = 0; // очищаем список с аватарками
+});
+
+postCreate.clearButton.addEventListener("click", () => {
+    postCreate.input.value = ""; // очищаем поле текста
+    postCreate.catName.value = ""; // очищаем имя
+    postCreate.catAvatar.selectedIndex = 0; 
 });
 
 sortButtons.buttonNew.addEventListener("click", () => { // сортировка от новых к старым постам

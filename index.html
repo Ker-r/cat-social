@@ -2,61 +2,71 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Cat Social </title>
+    <title>Cat Social</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="header">
         <h1 class="title">Cat Social 🐱</h1>
         <nav class="header__menu">
-        <ul class="header__links-list">
-          <li class="header__links-list-item">
-            <a class="header__link">Главная</a>
-          </li>
-          <li class="header__links-list-item" >
-            <a class="header__link" href="#">Мои посты</a>
-          </li>
-          <!-- <li class="header__links-list-item">
-            <a class="header__link" href="#">об аукционе</a>
-          </li> -->
-        </ul>
-      </nav>
-      <!-- <a class="header__logo">
-        <img
-          class="header__logo-image"
-          src="#" 
-          alt="Логотип с котиком"/>
-      </a> -->
+            <ul class="header__links-list">
+                <li class="header__links-list-item">
+                    <a class="header__link" href="#">Главная</a>
+                </li>
+                <li class="header__links-list-item">
+                    <a class="header__link" href="#">Мои посты</a>
+                </li>
+            </ul>
+        </nav>
     </header>
+
     <div class="layout">
-        <div class="post_maker">
+        <aside class="post_maker">
             <div class="form">
+                <h2 class="form__title">🐱 Создать новый пост</h2>
                 <div class="text_wrapper">
-                    <h2>🐱 Создать новый пост</h2>
                     <textarea class="text" placeholder="Что думает ваш котик?"></textarea>
                     <span class="counter"></span>
                 </div>
-                <label class="title_name">Имя котика</label>
-                <input class="cat_name" placeholder="Имя котика">
-                <select class="cat_avatar">
-                </select>
-                <button class="button">Добавить пост</button>
+                <div class="form__field">
+                    <label class="form__label">Имя котика</label>
+                    <input class="cat_name" placeholder="Как зовут вашего котика?">
+                </div>
+                <div class="form__field">
+                    <label class="form__label">Аватар котика</label>
+                    <select class="cat_avatar"></select>
+                </div>
+                <div class="form__buttons">
+                    <button class="button button--primary">🐾 Опубликовать</button>
+                    <button class="button button--secondary">Очистить</button>
+                </div>
                 <button class="load_server_btn">Загрузить посты с сервера</button>
             </div>
+
             <div class="filter">
-                <select class="filter_cat">
-                    <option>Все котики</option>
-                </select>
-                    <button class="apply_filter_btn">Применить фильтр</button>
-                    <button class="reset_filter_btn">Сбросить фильтр</button>
+                <h3 class="filter__title">🐱 Фильтры</h3>
+                <div class="form__field">
+                    <label class="form__label">Котики</label>
+                    <select class="filter_cat">
+                        <option>Все котики</option>
+                    </select>
+                </div>
+                <div class="filter__buttons">
+                    <button class="apply_filter_btn button button--primary">Применить</button>
+                    <button class="reset_filter_btn button button--secondary">Сбросить</button>
+                </div>
             </div>
+
             <div class="sort">
-                <p>Отсортировать:</p>
-                <button class="sort_date_new">По дате (новые)</button>
-                <button class="sort_date_old">По дате (старые)</button>
-                <button class="sort_likes">По лайкам</button>
+                <h3 class="sort__title">Сортировка</h3>
+                <div class="sort__buttons">
+                    <button class="sort_date_new button button--sort">По дате (новые)</button>
+                    <button class="sort_date_old button button--sort">По дате (старые)</button>
+                    <button class="sort_likes button button--sort">По лайкам</button>
+                </div>
             </div>
-        </div>
+        </aside>
+
         <div class="posts_list">
             <div class="post"></div>
         </div>
