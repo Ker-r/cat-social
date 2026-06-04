@@ -23,11 +23,17 @@ class PostCard {
         const element = document.createElement("div"); // создаем div с постом
         element.classList.add("post_card");
         element.innerHTML = `
-            <span class="post_text">${this.postData.text}</span>
-            <span class="post_name">${this.postData.name}</span>
-            <span class="post_date">${this.postData.createdAt ? new Date(this.postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
-            <span class="post_avatar">${this.postData.avatar || "🐱"}</span>
+            <div class="post_header">
+                <span class="post_name">${this.postData.name}</span>
+                <span class="post_date">${this.postData.createdAt ? new Date(this.postData.createdAt).toLocaleString() : 'дата неизвестна'}</span>
+                <span class="post_avatar">${this.postData.avatar || "🐱"}</span>
+            </div>
+            <div class="post_body">
+                <span class="post_text">${this.postData.text}</span>
+            </div>
         `;
+        const header = element.querySelector(".post_header")!;
+        const body = element.querySelector(".post_body")!;
 
         const removeButton = document.createElement("button"); // создаем кнопку удаления поста
         removeButton.classList.add("button_remove");
@@ -40,7 +46,7 @@ class PostCard {
             ) // удаляем пост
             this.onUpdate(newPosts);
         })
-        element.append(removeButton); // добавляем кнопку в созданный пост
+        header.append(removeButton) // добавляем кнопку в созданный пост
 
         const editButton = document.createElement("button");
         editButton.classList.add("button_edit");
@@ -57,7 +63,7 @@ class PostCard {
             this.postData.text = newText.trim();
             this.onUpdate(this.postsArray);
         })
-        element.append(editButton); 
+        header.append(editButton);
 
         const likeButton = document.createElement("button"); // создаем кнопку для лайков
         likeButton.classList.add("button_like");
@@ -70,7 +76,7 @@ class PostCard {
             this.postData.isLiked = !this.postData.isLiked;
             this.onUpdate(this.postsArray);
         })
-        element.append(likeButton); // добавляем кнопку к посту
+        body.append(likeButton); // добавляем кнопку к посту
 
         this.container.append(element); // добавляем пост 
         }
