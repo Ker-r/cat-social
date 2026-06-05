@@ -117,3 +117,19 @@ export function renderPosts(container: HTMLDivElement, postsArray: Post[], onUpd
         }
     })
 }
+
+export function renderMorePosts(container: HTMLDivElement, postsArray: Post[], onUpdate: (posts: Post[]) => void): void { // функция, которая берет данные из массива и рисует html
+    // container - это будет post из main.js (контейнер, куда рисовать посты).
+    // postsArray — массив постов
+    // onSave — это функция, которая будет вызвана, когда нужно сохранить изменения.
+    postsArray.forEach((postData) => { // вместо слова function мы добавили =>
+        if (postData.likes > 5) {
+            const frameCard = new FeaturedPostCard(postData, container, onUpdate, postsArray); // new — это способ создать конкретный экземпляр класса.
+            frameCard.render(); // создаем пост с данными с золотой рамкой
+        }
+        else {
+            const card = new PostCard(postData, container, onUpdate, postsArray); // new — это способ создать конкретный экземпляр класса.
+            card.render(); // создаем пост с данными
+        }
+    })
+}

@@ -1,11 +1,13 @@
 // главный управляющий файл
 import { nanoid } from 'nanoid';
 import { storage } from './storage'
-import { renderPosts} from './render'
+import { renderPosts, renderMorePosts } from './render'
 
 import { Post, ServerPost } from './types'
 
 let posts: Post[] = []; // создаем массив постов
+const POSTS_PER_PAGE = 10; // постов на странице
+let currentPage = 1; // текущая страница
 
 const postCreate = {
     // ! говорит, что здесь не будет null
@@ -21,6 +23,8 @@ const postCreate = {
 const MAX_LENGTH = 300;
 const counter = document.querySelector<HTMLSpanElement>(".counter")!;
 counter.textContent = String(MAX_LENGTH);
+
+const loadButton = document.querySelector<HTMLButtonElement>(".load_more_btn")!; // кнопка загрузки постов
 
 postCreate.input.addEventListener("input", function(){ // считает количество введенных символов и показывается сколько осталось
     if (postCreate.input.value.length > MAX_LENGTH) { // если пользователь ввел много символов,
@@ -40,7 +44,10 @@ postCreate.serverButton.addEventListener("click", async function() {
     // async — функция асинхронная, можно использовать await внутри
     const serverPosts = await storage.loadPostsFromServer(); // ждём пока загрузятся посты с сервера
     const converPosts = convertServerPosts(serverPosts); // преобразуем серверный формат в наш формат
-    render(converPosts); // отрисовываем посты на экране — очищает контейнер и рисует каждый пост
+    posts = converPosts; // сохраняем все серверные посты в глобальный массив
+    loadButton.style.display = "block";
+    currentPage = 1; // сбрасываем на первую страницу
+    render(getPostsForCurrentPage()) // показываем только первые 10 постов
 })
 
 const sortButtons = {
@@ -185,6 +192,26 @@ function convertServerPosts(serverPosts: ServerPost[]): Post[] {
     }
     })
     return convertPost; // возвращаем готовый массив наших постов
+}
+
+// возвращает только те посты которые нужно показать на текущей странице
+// например если страница 2 и POSTS_PER_PAGE = 10 — вернёт посты с индекса 10 по 19
+function getPostsForCurrentPage(): Post[] {
+    // (currentPage - 1) * POSTS_PER_PAGE — начало среза (страница 1 → 0, страница 2 → 10)
+    // currentPage * POSTS_PER_PAGE — конец среза (страница 1 → 10, страница 2 → 20)
+    return posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE)
+}
+
+loadButton.addEventListener("click", async function() {
+    currentPage++; // переходим на следующую страницу
+    renderMore(getPostsForCurrentPage()) // показываем посты следующей страницы
+    if (currentPage * POSTS_PER_PAGE >= posts.length) {
+        loadButton.style.display = "none";
+    }
+})
+
+function renderMore(postsToRender: Post[]): void { 
+    renderMorePosts(postCreate.post, postsToRender, updatePosts)
 }
 
 
