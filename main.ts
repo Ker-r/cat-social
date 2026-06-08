@@ -2,6 +2,7 @@
 import { nanoid } from 'nanoid';
 import { storage } from './storage'
 import { renderPosts, renderMorePosts } from './render'
+import { eventBroker } from './eventBroker'
 
 import { Post, ServerPost } from './types'
 
@@ -209,6 +210,15 @@ loadButton.addEventListener("click", async function() {
         loadButton.style.display = "none";
     }
 })
+
+// подписываемся на событие "postsUpdated" — когда что-то изменилось в постах
+// render.ts не знает про updatePosts — он просто говорит "postsUpdated произошло"
+// а мы здесь решаем что делать когда это событие случилось
+eventBroker.subscribe("postsUpdated", function(newPosts: unknown) {
+    // newPosts — данные которые передал emit из render.ts
+    // приводим тип unknown к Post[] так как знаем что там массив постов
+    updatePosts(newPosts as Post[]); // вызываем функцию которая сохраняет и перерисовывает посты
+});
 
 function renderMore(postsToRender: Post[]): void { 
     renderMorePosts(postCreate.post, postsToRender, updatePosts)

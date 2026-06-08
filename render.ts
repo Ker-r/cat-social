@@ -1,5 +1,6 @@
 // отображение постов и реакция на действия пользователя
 import { Post } from './types'
+import { eventBroker } from './eventBroker'
 
 class PostCard {
     // protected - дочерние классы могут обращаться к таким полям.
@@ -49,7 +50,7 @@ class PostCard {
             const newPosts = this.postsArray.filter((p) =>  // вместо слова function мы добавили =>
                 p.id !== this.postData.id // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
             ) // удаляем пост
-            this.onUpdate(newPosts);
+            eventBroker.emit("postsUpdated", newPosts);
         })
         header.append(removeButton) // добавляем кнопку в созданный пост
 
@@ -66,7 +67,7 @@ class PostCard {
 
             // Если дошли сюда — текст валидный, обновляем
             this.postData.text = newText.trim();
-            this.onUpdate(this.postsArray);
+            eventBroker.emit("postsUpdated" ,this.postsArray);
         })
         header.append(editButton);
 
@@ -79,7 +80,7 @@ class PostCard {
         likeButton.addEventListener("click", () => { // при нажатии на кнопку лайка
             this.postData.likes++; // увеличиваем лайк на 1
             this.postData.isLiked = !this.postData.isLiked;
-            this.onUpdate(this.postsArray);
+            eventBroker.emit("postsUpdated", this.postsArray);
         })
         body.append(likeButton); // добавляем кнопку к посту
 
