@@ -81,7 +81,25 @@
             <button class="load_more_btn">Загрузить еще</button>
         </div>
     </div>
-
+    <div class="modal" id="modal_delete">
+        <div class="modal__content">
+            <p>Точно удалить этот пост?</p>
+            <div class="modal__buttons">
+                <button class="modal__confirm">Удалить</button>
+                <button class="modal__cancel">Отмена</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal_edit">
+        <div class="modal__content">
+            <p>Редактировать пост</p>
+            <textarea class="modal__textarea"></textarea>
+            <div class="modal__buttons">
+                <button class="modal__save">Сохранить</button>
+                <button class="modal__cancel modal__cancel--edit">Отмена</button>
+            </div>
+        </div>
+    </div>
     <script type="module" src="main.ts"></script>
 </body>
 </html>

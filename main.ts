@@ -22,6 +22,16 @@ const postCreate = {
     serverButton: document.querySelector<HTMLButtonElement>(".load_server_btn")!,
 }
 
+const modal = document.querySelector<HTMLDivElement>(".modal")!;
+const modalConfirm = document.querySelector<HTMLButtonElement>(".modal__confirm")!;
+const modalCancel = document.querySelector<HTMLButtonElement>(".modal__cancel")!;
+const modalEdit = document.querySelector<HTMLDivElement>("#modal_edit")!;
+const modalEditTextarea = document.querySelector<HTMLTextAreaElement>(".modal__textarea")!;
+const modalSave = document.querySelector<HTMLButtonElement>(".modal__save")!;
+const modalCancelEdit = document.querySelector<HTMLButtonElement>(".modal__cancel--edit")!;
+
+let postToEdit: Post | null = null;
+
 const MAX_LENGTH = 300;
 const counter = document.querySelector<HTMLSpanElement>(".counter")!;
 counter.textContent = String(MAX_LENGTH);
@@ -243,6 +253,45 @@ eventBroker.subscribe("postsUpdated", function(newPosts: unknown) {
     // приводим тип unknown к Post[] так как знаем что там массив постов
     updatePosts(newPosts as Post[]); // вызываем функцию которая сохраняет и перерисовывает посты
 });
+
+let postIdToDelete: string | null = null; // запоминаем id поста который хотим удалить
+
+eventBroker.subscribe("deleteRequested", function(postId: unknown) {
+    postIdToDelete = postId as string; // сохраняем id
+    modal.classList.add("active"); // показываем модальное окно
+});
+
+eventBroker.subscribe("editRequested", function(postData: unknown) {
+    postToEdit = postData as Post; // сохраняем пост который редактируем
+    modalEditTextarea.value = postToEdit.text; // заполняем textarea текущим текстом
+    modalEdit.classList.add("active"); // показываем модальное окно
+});
+
+modalCancel.addEventListener("click", () => {
+    modal.classList.remove("active");
+})
+
+modalConfirm.addEventListener("click", () => {
+    const newPosts = posts.filter((p) => p.id !== postIdToDelete);
+    updatePosts(newPosts);
+    modal.classList.remove("active");
+    postIdToDelete = null
+})
+
+modalCancelEdit.addEventListener("click", () => {
+    modalEdit.classList.remove("active");
+    postToEdit = null
+})
+
+modalSave.addEventListener("click", () => {
+    // если postToEdit не null:
+    if (postToEdit) {
+        postToEdit.text = modalEditTextarea.value;
+        updatePosts(posts);
+        postToEdit = null;
+        modalEdit.classList.remove("active");
+    }
+})
 
 function renderMore(postsToRender: Post[]): void { 
     renderMorePosts(postCreate.post, postsToRender, updatePosts)

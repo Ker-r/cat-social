@@ -46,13 +46,8 @@ class PostCard {
         const removeButton = document.createElement("button"); // создаем кнопку удаления поста
         removeButton.classList.add("button_remove");
         removeButton.textContent = "❌"; // текст внутри нее
-        removeButton.addEventListener("click", () => { // при нажатии на эту кнопку
-            const isConfirmed = confirm("Точно удалить этот пост?");
-            if (isConfirmed === false) return;
-            const newPosts = this.postsArray.filter((p) =>  // вместо слова function мы добавили =>
-                p.id !== this.postData.id // "оставляем все посты, кроме этого" // также убрали {} и return (они автоматически)
-            ) // удаляем пост
-            eventBroker.emit("postsUpdated", newPosts);
+        removeButton.addEventListener("click", () => {
+            eventBroker.emit("deleteRequested", this.postData.id);
         })
         header_right.append(removeButton) // добавляем кнопку в созданный пост
 
@@ -60,16 +55,7 @@ class PostCard {
         editButton.classList.add("button_edit");
         editButton.textContent = "✏️";
         editButton.addEventListener("click", () => {
-            const newText = prompt("Введите новый текст поста", this.postData.text); // prompt - всплывающее окно
-            // Если нажали "Отмена" — выходим
-            if (newText === null) return;
-
-            // Если после удаления пробелов ничего не осталось — выходим
-            if (newText.trim() === "") return;
-
-            // Если дошли сюда — текст валидный, обновляем
-            this.postData.text = newText.trim();
-            eventBroker.emit("postsUpdated" ,this.postsArray);
+            eventBroker.emit("editRequested", this.postData);
         })
         header_right.append(editButton);
 
