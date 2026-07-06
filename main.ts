@@ -17,6 +17,7 @@ const postCreate = {
     post: document.querySelector<HTMLDivElement>(".post")!, // ищем тег для всех постов
     catName: document.querySelector<HTMLInputElement>(".cat_name")!, // ищем тег для поля ввода имени котика
     catAvatar: document.querySelector<HTMLSelectElement>(".cat_avatar")!, // ищем тег для выбора аватара котика
+    catPhoto: document.querySelector<HTMLInputElement>(".cat_photo")!, // ищем фото 
     clearButton: document.querySelector<HTMLButtonElement>(".button.button--secondary")!,
     serverButton: document.querySelector<HTMLButtonElement>(".load_server_btn")!,
 }
@@ -94,19 +95,42 @@ postCreate.button.addEventListener("click", function() { // при нажати�
         text: postCreate.input.value, // в текст передаем введеный в поле текст
         name: postCreate.catName.value.trim(), // введено имя
         avatar: postCreate.catAvatar.value, // выбранный аватар
+        photo: "" as string | undefined,
         createdAt: now, // используем дату
         likes: 0, // изначально лайки = 0
         isLiked: false,
     }
-    posts.unshift(postData) // добавляем созданный пост в массив
-    storage.savePostsToLocalStorage(posts)
-    render(posts); // вызывает функцию 
-    updateFilterOptions();
-    // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
-    postCreate.input.value = ""; // очищаем поле текста
-    postCreate.catName.value = ""; // очищаем имя
-    postCreate.catAvatar.selectedIndex = 0; // очищаем список с аватарками
+    const file = postCreate.catPhoto.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            postData.photo = reader.result as string;
+            posts.unshift(postData) // добавляем созданный пост в массив
+            storage.savePostsToLocalStorage(posts)
+            render(posts); // вызывает функцию 
+            updateFilterOptions();
+            // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
+            postCreate.input.value = ""; // очищаем поле текста
+            postCreate.catName.value = ""; // очищаем имя
+            postCreate.catAvatar.selectedIndex = 0; // очищаем список с аватарками
+        }
+        reader.readAsDataURL(file);
+    } else {
+        posts.unshift(postData) // добавляем созданный пост в массив
+        storage.savePostsToLocalStorage(posts)
+        render(posts); // вызывает функцию 
+        updateFilterOptions();
+        // post — это контейнер, posts — массив, savePostsToLocalStorage — функция сохранения.
+        postCreate.input.value = ""; // очищаем поле текста
+        postCreate.catName.value = ""; // очищаем имя
+        postCreate.catAvatar.selectedIndex = 0; // очищаем список с аватарками
+    }
 });
+
+postCreate.catPhoto.addEventListener("change", function() {
+    const catPhotoAdd = document.querySelector(".cat_photo_name")!;
+    catPhotoAdd.textContent = postCreate.catPhoto.files?.[0].name || "";
+})
 
 postCreate.clearButton.addEventListener("click", () => {
     postCreate.input.value = ""; // очищаем поле текста

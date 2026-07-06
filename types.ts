@@ -6,6 +6,7 @@ export interface Post {
     text: string;
     name: string;
     avatar: string;
+    photo?: string; // ? означает что поле может быть, а может не быть
     createdAt: Date;
     likes: number;
     isLiked: boolean;

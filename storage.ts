@@ -7,8 +7,12 @@ class PostStorage {
     // Сохраняем текущий массив постов в localStorage,
     // чтобы при перезагрузке страницы они не исчезли.
     savePostsToLocalStorage(postsArray: Post[]): void { // получает массив постов, превращает его в строку и сохраняет в localStorage.
-        const catPosts = JSON.stringify(postsArray); // превращает массив posts в строку
-        localStorage.setItem('cat_posts', catPosts); // сохраняет в localStorage под ключом "cat_posts"
+        try {
+            const catPosts = JSON.stringify(postsArray); // превращает массив posts в строку
+            localStorage.setItem('cat_posts', catPosts); // сохраняет в localStorage под ключом "cat_posts"
+        } catch(error) {
+            console.log("Ошибка сохранения:", error);
+        }
     }
 
     // При загрузке страницы достаём сохранённые посты из браузера.

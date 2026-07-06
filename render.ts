@@ -36,10 +36,12 @@ class PostCard {
             </div>
             <div class="post_body">
                 <span class="post_text">${this.postData.text}</span>
+                ${this.postData.photo ? `<img src="${this.postData.photo}" class="post_photo">` : ''}
             </div>
         `;
         const header = element.querySelector(".post_header")!;
         const body = element.querySelector(".post_body")!;
+        const header_right = element.querySelector(".post_header_right")!;
 
         const removeButton = document.createElement("button"); // создаем кнопку удаления поста
         removeButton.classList.add("button_remove");
@@ -52,7 +54,7 @@ class PostCard {
             ) // удаляем пост
             eventBroker.emit("postsUpdated", newPosts);
         })
-        header.append(removeButton) // добавляем кнопку в созданный пост
+        header_right.append(removeButton) // добавляем кнопку в созданный пост
 
         const editButton = document.createElement("button");
         editButton.classList.add("button_edit");
@@ -69,7 +71,7 @@ class PostCard {
             this.postData.text = newText.trim();
             eventBroker.emit("postsUpdated" ,this.postsArray);
         })
-        header.append(editButton);
+        header_right.append(editButton);
 
         const likeButton = document.createElement("button"); // создаем кнопку для лайков
         likeButton.classList.add("button_like");
@@ -82,7 +84,7 @@ class PostCard {
             this.postData.isLiked = !this.postData.isLiked;
             eventBroker.emit("postsUpdated", this.postsArray);
         })
-        body.append(likeButton); // добавляем кнопку к посту
+        header_right.append(likeButton); // добавляем кнопку к посту
 
         this.container.append(element); // добавляем пост 
         }
